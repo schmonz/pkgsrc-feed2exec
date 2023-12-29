@@ -1,7 +1,8 @@
-# $NetBSD: Makefile,v 1.20 2023/02/23 15:59:24 schmonz Exp $
+# $NetBSD: Makefile,v 1.24 2023/11/07 22:38:02 wiz Exp $
 
 DISTNAME=		feed2exec-0.19.0
 PKGNAME=		${PYPKGPREFIX}-${DISTNAME}
+PKGREVISION=		3
 CATEGORIES=		mail python
 MASTER_SITES=		${MASTER_SITE_GITLAB:=anarcat/feed2exec/-/archive/${PKGVERSION_NOREV}/}
 
@@ -10,10 +11,10 @@ HOMEPAGE=		https://feed2exec.readthedocs.io/
 COMMENT=		The programmable feed reader
 LICENSE=		gnu-agpl-v3
 
-BUILD_DEPENDS+=		${PYPKGPREFIX}-tox-[0-9]*:../../devel/py-tox
-BUILD_DEPENDS+=		${PYPKGPREFIX}-flakes-[0-9]*:../../devel/py-flakes
-BUILD_DEPENDS+=		${PYPKGPREFIX}-sphinx-[0-9]*:../../textproc/py-sphinx
-BUILD_DEPENDS+=		${PYPKGPREFIX}-wheel-[0-9]*:../../devel/py-wheel
+TOOL_DEPENDS+=		${PYPKGPREFIX}-tox-[0-9]*:../../devel/py-tox
+TOOL_DEPENDS+=		${PYPKGPREFIX}-flakes-[0-9]*:../../devel/py-flakes
+TOOL_DEPENDS+=		${PYPKGPREFIX}-sphinx-[0-9]*:../../textproc/py-sphinx
+TOOL_DEPENDS+=		${PYPKGPREFIX}-wheel-[0-9]*:../../devel/py-wheel
 DEPENDS+=		${PYPKGPREFIX}-Unidecode-[0-9]*:../../textproc/py-Unidecode
 DEPENDS+=		${PYPKGPREFIX}-attrs-[0-9]*:../../devel/py-attrs
 DEPENDS+=		${PYPKGPREFIX}-cachecontrol-[0-9]*:../../devel/py-cachecontrol
@@ -24,7 +25,6 @@ DEPENDS+=		${PYPKGPREFIX}-html2text-[0-9]*:../../textproc/py-html2text
 DEPENDS+=		${PYPKGPREFIX}-xdg-[0-9]*:../../devel/py-xdg
 DEPENDS+=		${PYPKGPREFIX}-requests-[0-9]*:../../devel/py-requests
 DEPENDS+=		${PYPKGPREFIX}-requests-file-[0-9]*:../../devel/py-requests-file
-DEPENDS+=		${PYPKGPREFIX}-sqlite3-[0-9]*:../../databases/py-sqlite3
 DEPENDS+=		${PYPKGPREFIX}-wcwidth-[0-9]*:../../devel/py-wcwidth
 DEPENDS+=		${PYPKGPREFIX}-html5lib-[0-9]*:../../textproc/py-html5lib
 DEPENDS+=		${PYPKGPREFIX}-lxml-[0-9]*:../../textproc/py-lxml
@@ -35,7 +35,7 @@ TEST_DEPENDS+=		${PYPKGPREFIX}-test-runner-[0-9]*:../../devel/py-test-runner
 
 USE_LANGUAGES=		# none
 
-PYTHON_VERSIONS_INCOMPATIBLE=	27
+PYTHON_VERSIONS_INCOMPATIBLE=	27 38
 
 USE_PKG_RESOURCES=	yes
 
@@ -50,9 +50,7 @@ post-extract:
 do-test:
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} pytest-${PYVERSSUFFIX}
 
-#post-install:
-#	${RM} -rf ${DESTDIR}${PREFIX}/${PYSITELIB}/feed2exec/__pycache__/
-
+.include "../../lang/python/batteries-included.mk"
 .include "../../lang/python/application.mk"
 .include "../../lang/python/egg.mk"
 .include "../../mk/bsd.pkg.mk"
