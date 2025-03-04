@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.26 2024/01/18 12:14:15 wiz Exp $
+# $NetBSD: Makefile,v 1.31 2025/02/23 16:59:20 wiz Exp $
 
 DISTNAME=		feed2exec-0.20.0
 PKGNAME=		${PYPKGPREFIX}-${DISTNAME}
@@ -10,10 +10,10 @@ HOMEPAGE=		https://feed2exec.readthedocs.io/
 COMMENT=		The programmable feed reader
 LICENSE=		gnu-agpl-v3
 
+TOOL_DEPENDS+=		${PYPKGPREFIX}-setuptools-[0-9]*:../../devel/py-setuptools
 TOOL_DEPENDS+=		${PYPKGPREFIX}-tox-[0-9]*:../../devel/py-tox
 TOOL_DEPENDS+=		${PYPKGPREFIX}-flakes-[0-9]*:../../devel/py-flakes
 TOOL_DEPENDS+=		${PYPKGPREFIX}-sphinx-[0-9]*:../../textproc/py-sphinx
-TOOL_DEPENDS+=		${PYPKGPREFIX}-wheel-[0-9]*:../../devel/py-wheel
 DEPENDS+=		${PYPKGPREFIX}-Unidecode-[0-9]*:../../textproc/py-Unidecode
 DEPENDS+=		${PYPKGPREFIX}-attrs-[0-9]*:../../devel/py-attrs
 DEPENDS+=		${PYPKGPREFIX}-cachecontrol-[0-9]*:../../devel/py-cachecontrol
@@ -30,11 +30,10 @@ DEPENDS+=		${PYPKGPREFIX}-lxml-[0-9]*:../../textproc/py-lxml
 TEST_DEPENDS+=		${PYPKGPREFIX}-betamax>=0.8.0:../../www/py-betamax
 TEST_DEPENDS+=		${PYPKGPREFIX}-test-[0-9]*:../../devel/py-test
 TEST_DEPENDS+=		${PYPKGPREFIX}-test-cov-[0-9]*:../../devel/py-test-cov
-TEST_DEPENDS+=		${PYPKGPREFIX}-test-runner-[0-9]*:../../devel/py-test-runner
 
 USE_LANGUAGES=		# none
 
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38
+PYTHON_VERSIONS_INCOMPATIBLE=	39 310 # py-sphinx
 
 SUBST_CLASSES+=		version
 SUBST_STAGE.version=	pre-configure
@@ -44,6 +43,7 @@ SUBST_SED.version=	-e 's|@VERSION@|${PKGVERSION_NOREV}|'
 post-extract:
 	${ECHO} "version_number = \"${PKGVERSION_NOREV}\"" > ${WRKSRC}/feed2exec/_version.py
 
+# 3 failed, 45 passed, 2 skipped, 1 xfailed, 91 warnings
 do-test:
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} pytest-${PYVERSSUFFIX}
 
